@@ -1,1 +1,86 @@
-<html><body><h1>PS4 Test</h1></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slopkit 13.52</title>
+<style>
+:root{color-scheme:dark;--bg:#09070d;--panel:#100b18;--line:#29202f;--pink:#ec4899;--purple:#8b5cf6;--text:#f4eff8;--muted:#a89caf}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#171022 0,#09070d 45%);font:16px system-ui,-apple-system,sans-serif;color:var(--text);min-height:100vh}
+main{max-width:760px;margin:auto;padding:28px 16px}.card{background:rgba(16,11,24,.94);border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 12px 40px #0006}
+h1{margin:0 0 6px;font-size:30px}h2{font-size:18px;margin:0 0 12px}.sub{color:var(--muted);margin:0 0 20px}
+button{width:100%;border:0;border-radius:10px;padding:13px 16px;background:linear-gradient(90deg,var(--purple),var(--pink));color:white;font-weight:700;font-size:15px;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.ok{color:#7ee787}.warn{color:#ffcc66}.bad{color:#ff7b72}
+.small{font-size:13px;color:var(--muted);line-height:1.5}pre{white-space:pre-wrap;word-break:break-word;background:#08060b;border:1px solid var(--line);padding:12px;border-radius:10px;color:#d8cde0}
+</style>
+</head>
+<body>
+<main>
+<section class="card">
+<h1>Slopkit 13.52</h1>
+<p class="sub">WebKit compatibility lab for PS4 FW 13.52</p>
+<button id="run">Run compatibility test</button>
+</section>
+
+<section class="card">
+<h2>Environment</h2>
+<div id="env"><p class="small">Press the button to collect browser-side information.</p></div>
+</section>
+
+<section class="card">
+<h2>Capability checks</h2>
+<div id="checks"><p class="small">No test has run yet.</p></div>
+</section>
+
+<section class="card">
+<h2>Notes</h2>
+<p class="small">This page only performs browser-side compatibility checks. It does not contain a kernel exploit, arbitrary kernel read/write, sandbox escape, payload loader, or HEN installer.</p>
+</section>
+</main>
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+function row(name,value,cls=""){
+  return '<div class="row"><span>'+name+'</span><strong class="'+cls+'">'+value+'</strong></div>';
+}
+
+function yes(v){return v ? ["PASS","ok"] : ["NO","bad"];}
+
+function test(){
+  $("run").disabled=true;
+  const ua=navigator.userAgent;
+  const webkit=/AppleWebKit/i.test(ua);
+  const ps4=/PlayStation 4/i.test(ua);
+  const fw=(ua.match(/PlayStation 4[ /](\d+\.\d+)/i)||[])[1]||"not reported";
+  const checks=[
+    ["AppleWebKit marker",webkit],
+    ["PS4 user agent",ps4],
+    ["CSS Font Loading API","FontFace" in window && "fonts" in document],
+    ["FontFace constructor",typeof window.FontFace==="function"],
+    ["WebAssembly",typeof WebAssembly==="object"],
+    ["BigInt",typeof BigInt==="function"],
+    ["SharedArrayBuffer",typeof SharedArrayBuffer==="function"],
+    ["WebGL",!!document.createElement("canvas").getContext("webgl")],
+    ["localStorage",(()=>{
+      try{localStorage.setItem("__slopkit_test","1");localStorage.removeItem("__slopkit_test");return true}catch(e){return false}
+    })()]
+  ];
+
+  $("env").innerHTML=
+    row("Reported platform",navigator.platform||"unknown")+
+    row("Firmware in UA",fw)+
+    row("User agent",ua);
+
+  $("checks").innerHTML=checks.map(([n,v])=>{
+    const [t,c]=yes(v); return row(n,t,c);
+  }).join("");
+
+  $("run").disabled=false;
+}
+
+$("run").addEventListener("click",test);
+</script>
+</body>
+</html>
