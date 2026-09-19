@@ -12,6 +12,8 @@ h1{margin:0 0 6px;font-size:30px}h2{font-size:18px;margin:0 0 12px}.sub{color:va
 button{width:100%;border:0;border-radius:10px;padding:13px 16px;background:linear-gradient(90deg,var(--purple),var(--pink));color:white;font-weight:700;font-size:15px;cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.ok{color:#7ee787}.warn{color:#ffcc66}.bad{color:#ff7b72}
 .small{font-size:13px;color:var(--muted);line-height:1.5}pre{white-space:pre-wrap;word-break:break-word;background:#08060b;border:1px solid var(--line);padding:12px;border-radius:10px;color:#d8cde0}
+#notice{display:none;margin:14px 0;padding:14px;border:1px solid #5d2f68;border-radius:12px;background:#1a1022}
+#notice strong{display:block;font-size:17px}#notice span{display:block;margin-top:4px;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
@@ -20,6 +22,10 @@ button:disabled{opacity:.55;cursor:wait}.row{display:flex;justify-content:space-
 <h1>Slopkit 13.52</h1>
 <p class="sub">WebKit compatibility lab for PS4 FW 13.52</p>
 <button id="run">Run compatibility test</button>
+<div id="notice">
+<strong>SlopKit Loaded</strong>
+<span>This is a Test! From ps4 notification</span>
+</div>
 </section>
 
 <section class="card">
@@ -77,6 +83,7 @@ function test(){
     const [t,c]=yes(v); return row(n,t,c);
   }).join("");
 
+  $("notice").style.display="block";
   $("run").disabled=false;
 }
 
